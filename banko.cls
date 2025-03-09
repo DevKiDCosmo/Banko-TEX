@@ -1,7 +1,10 @@
+% Please be sure to run the compiler at least 3 times to have all correct placement for the different parts of this document. It is recommended to run the compiler more than 3 times. I compile for release at least 4 times (Line number, svg and images alignments, text formatting and biber, fonts etc.).
+
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{banko}[A document class called banko]
 
 \RequirePackage{kvoptions}
+\RequirePackage{datetime}
 
 \DeclareStringOption[ieee]{bibstyle}        % Citation style
 \DeclareStringOption[english]{language}     % Language
@@ -17,6 +20,9 @@
 % Base class: article with two-column layout
 \LoadClass[twocolumn]{article}
 
+\RequirePackage{chemfig}
+
+
 % Load required packages
 \RequirePackage{xcolor}           % Color
 \RequirePackage{fontspec}         % Font
@@ -24,9 +30,9 @@
 \RequirePackage{lastpage}         % Last page
 % \RequirePackage{luacode} Disabled
 \RequirePackage[                                        % Title settings
-    %explicit,
-    compact,
-    % nobottomtitles,
+%explicit,
+compact,
+% nobottomtitles,
 ]{titlesec}  
 \RequirePackage{svg}
 \RequirePackage{tipa}
@@ -53,7 +59,7 @@
 \RequirePackage{siunitx}                                % Units
 \sisetup{detect-all}
 \RequirePackage[                                        % Chemistry typesetting
-    version=4
+version=4
 ]{mhchem}
 \RequirePackage{extarrows}                              % Labelled arrows and signs
 \RequirePackage{gensymb}                                % Generic symbols for text and math mode
@@ -62,9 +68,9 @@
 
 % Links and cross-references
 \RequirePackage[                                        % Links and cross-references
-    colorlinks = false,
-    allcolors  = blue,
-    unicode    = true
+colorlinks = false,
+allcolors  = blue,
+unicode    = true
 ]{hyperref} % Adding Autoref
 \RequirePackage{xurl}
 
@@ -75,14 +81,14 @@
 \RequirePackage{amsmath}
 \RequirePackage{amssymb}
 \RequirePackage[                                        % Underlines: normalem to avoid underlining all \emph'sized words (bibliography entries)
-    normalem
+normalem
 ]{ulem}
 
 % Bibliography
 \RequirePackage[
-    backend=biber,
-    style=ieee, % \BPN@bibstyle
-    citestyle=numeric-comp
+backend=biber,
+style=ieee, % \BPN@bibstyle
+citestyle=numeric-comp
 ]{biblatex}                                             % Biblatex citation engine and style
 \RequirePackage[capitalise]{cleveref}                   % Chained citations
 \RequirePackage{csquotes}                               % Recommended addition for citations
@@ -100,22 +106,22 @@
 \RequirePackage{xeCJK}
 
 % Automatic font setup for Japanese, Chinese, and Korean
-\setCJKmainfont{Noto Serif CJK KR}[  % Set default to Korean
-    Script=Hangul,
-    Language=Korean
-]
-\setCJKfallbackfamilyfont{\CJKrmdefault}{IPAMincho}[  % Fallback for Japanese
-    Script=Kana,
-    Language=Japanese
-]
-\setCJKfallbackfamilyfont{\CJKrmdefault}{SimSun}[  % Fallback for Chinese
-    Script=Han,
-    Language=Chinese
-]
+%\setCJKmainfont{Noto Serif KR}[  % Set default to Korean
+%Script=Hangul,
+%Language=Korean
+%]
+%\setCJKfallbackfamilyfont{\CJKrmdefault}{Noto Serif JP}[  % Fallback for Japanese
+%Script=Kana,
+%Language=Japanese
+%]
+%\setCJKfallbackfamilyfont{\CJKrmdefault}{SimSun}[  % Fallback for Chinese
+%Script=Han,
+%Language=Chinese
+%]
 
 % Sans-serif and monospace font setup
-\setCJKsansfont{Noto Sans CJK KR}[Script=Hangul]
-\setCJKmonofont{Noto Serif CJK KR}[Script=Hangul]
+%\setCJKsansfont{Noto Serif KR}[Script=Hangul]
+%\setCJKmonofont{Noto Serif KR}[Script=Hangul]
 
 % Line spacing and compatibility
 \linespread{1.1} % Adjust spacing for CJK text
@@ -125,7 +131,7 @@
 % \renewcommand{\rubysize}{1}
 \renewcommand{\rubysep}{0.1ex}
 
-\RequirePackage[english]{babel}
+\RequirePackage[german]{babel}
 
 % Russian and Cyrillic
 % High Priority - I am to bad.
@@ -143,11 +149,11 @@
 \newcommand*{\BPNdates}[1]{\def\BPN@dates{#1}}\BPNdates{}
 
 \newcommand*{\BPNmode}[1]{%
-    \ifx\relax#1\relax % Check if no argument is provided
-        \def\BPN@mode{0}% Default value is 0
-    \else
-        \def\BPN@mode{#1}% Set provided value
-    \fi
+	\ifx\relax#1\relax % Check if no argument is provided
+	\def\BPN@mode{0}% Default value is 0
+	\else
+	\def\BPN@mode{#1}% Set provided value
+	\fi
 }\BPNmode{}
 
 
@@ -156,7 +162,9 @@
 \newcommand*{\BPNundertitle}[1]{\def\BPN@undertitle{#1}}\BPNundertitle{}
 \newcommand*{\BPNRevision}[1]{\def\BPN@revision{#1}}\BPNRevision{}
 \newcommand*{\BPNVersion}[1]{\def\BPN@version{#1}}\BPNVersion{}
+\newcommand*{\BPNLogo}[1]{\def\BPN@logo{#1}}\BPNLogo{}
 
+\newcommand*{\BPNdoi}[1]{\def\BPN@doi{#1}}\BPNdoi{10.xxxx/xxxxx}
 
 % Footers & Headers
 \RequirePackage{fancyhdr} % Load the fancyhdr package
@@ -164,111 +172,115 @@
 % Maketitle
 
 \newcommand{\alignmentMode}[0]{%
-    \ifnum\BPN@mode=0
-        \centering
-    \else\ifnum\BPN@mode=1
-        \raggedright
-    \else
-        \raggedleft
-    \fi\fi
+	\ifnum\BPN@mode=0
+	\centering
+	\else\ifnum\BPN@mode=1
+	\raggedright
+	\else
+	\raggedleft
+	\fi\fi
 }
 
 \renewcommand{\abstract}[1]{
-    \def\BPN@abstract{
-        \vspace*{1 em} % Adjust the space before paragraphs
-        {\alignmentMode
-            \bfseries Abstract\\
-        }
-        \vspace*{0.2em} % Adjust the space after paragraphs
-        \setlength{\parindent}{0.5cm} % Indent the first line of text
-        \setlength{\parskip}{0pt} % Single spacing        
-        \raggedright
-        \quad#1
-    }
+	\def\BPN@abstract{
+		\vspace*{1 em} % Adjust the space before paragraphs
+		{\alignmentMode
+			\bfseries Abstract\\
+		}
+		\vspace*{0.2em} % Adjust the space after paragraphs
+		\setlength{\parindent}{0.5cm} % Indent the first line of text
+		\setlength{\parskip}{0pt} % Single spacing        
+		\raggedright
+		\quad#1
+	}
 }
 
 \newcounter{authcount}
 \newcounter{contactauthor}
 \NewDocumentCommand{\BPNauthor}{ s m m m }{%
-    \stepcounter{authcount}%
-    \csdef{BPN@author\theauthcount}{#2}%
-    \csdef{BPN@affiliation\theauthcount}{#3}%
-        \csdef{BPN@email\theauthcount}{#4}%
-    \IfBooleanT{#1}{\setcounter{contactauthor}{\theauthcount}}%
+	\stepcounter{authcount}%
+	\csdef{BPN@author\theauthcount}{#2}%
+	\csdef{BPN@affiliation\theauthcount}{#3}%
+	\csdef{BPN@email\theauthcount}{#4}%
+	\IfBooleanT{#1}{\setcounter{contactauthor}{\theauthcount}}%
 }
 
 % Define a custom title page style
 \fancypagestyle{titlepage}{
-    \fancyhf{} % Clear all header and footer fields
-    \fancyhead[C]{{\footnotesize\color{gray}\BPN@copyright}} % Custom header
-    \renewcommand{\headrulewidth}{0pt} % Header line thickness
-    \renewcommand{\footrulewidth}{0pt} % No footer line
-
-    \fancyfoot[L]{}
-    \fancyfoot[C]{}
-    \fancyfoot[R]{{\footnotesize\color{gray}Page \thepage\ of \pageref{LastPage}}}
+	\fancyhf{} % Clear all header and footer fields
+	\fancyhead[C]{{\footnotesize\color{gray} Banko Version: 1.5.3 Beta \BPN@copyright}} % Custom header
+	\renewcommand{\headrulewidth}{0pt} % Header line thickness
+	\renewcommand{\footrulewidth}{0pt} % No footer line
+	
+	\fancyfoot[L]{}
+	\fancyfoot[C]{}
+	\fancyfoot[R]{{\footnotesize\color{gray}Page \thepage\ of \pageref{LastPage}}}
 }
 
 % Define the \maketitle command with the custom header and randomized title
 \makeatletter
 % Two-column document with single-column title section
 \renewcommand\maketitle{\twocolumn[
-    \begin{@twocolumnfalse}
-        \begingroup
-            \global\@topnum\z@   % Prevents figures from going at top of page.
-            \@maketitle
-            \@thanks
-        \endgroup
-    \end{@twocolumnfalse}
-]}
+	\begin{@twocolumnfalse}
+		\begingroup
+		\global\@topnum\z@   % Prevents figures from going at top of page.
+		\@maketitle
+		\@thanks
+		\endgroup
+	\end{@twocolumnfalse}
+	]}
 \def\@maketitle{%
-    \begin{titlepage}
-        \thispagestyle{titlepage}
-        \alignmentMode
-        {\huge \bfseries{\@title}\par}
-        \vspace{1em}
-        {\Large \bfseries{\BPN@undertitle}} {\itshape on \BPN@dates.\BPN@year \space in \BPN@location} 
-        {Version \BPN@version \space Revision \BPN@revision \par}
-        \vspace{1em}
-
-        % Author
-        \begin{center}%
-            \lineskip .5em%
-            \newcounter{authnum}%
-            \setcounter{authnum}{0}
-            \whileboolexpr%
-                { test {\ifnumcomp{\value{authnum}}{<}{\theauthcount}} }%
-                {%
-                    \stepcounter{authnum}%
-                    \mbox{
-                        \normalsize\textbf{\csuse{BPN@author\theauthnum}\textsuperscript{\alph{authnum}}}%
-                        \ifboolexpr%
-                            { test {\ifnumcomp{\value{authnum}}{=}{\thecontactauthor}}}%
-                            {\textsuperscript{\kern-1pt$\conv$}}%
-                            {}%
-                        \ifboolexpr%
-                            { test {\ifnumcomp{\value{authnum}}{<}{\theauthcount}}}%
-                            {,~}%
-                            {}%
-                    }
-                }%
-        \end{center}%
-
-        % Author affiliations
-        {\small\itshape\selectfont%
-            \setcounter{authnum}{0}
-            \whileboolexpr%
-                { test {\ifnumcomp{\value{authnum}}{<}{\theauthcount}} }%
-                {%
-                    \stepcounter{authnum}%
-                    \parbox{0.75em}{\normalfont\selectfont\textsuperscript{\alph{authnum}}}\csuse{BPN@affiliation\theauthnum},~\uline{\csuse{BPN@email\theauthnum}}\par
-                }%
-            \parbox{0.75em}{\textsuperscript{*}}Corresponding author
-        }
-        
-        {\BPN@abstract\par}
-        \vspace{3em}
-    \end{titlepage}
+	\begin{titlepage}
+		\thispagestyle{titlepage}
+		\alignmentMode
+		{\huge \bfseries{\@title}\par}
+		\vspace{1em}
+		{\Large \bfseries{\BPN@undertitle}} {\itshape on \BPN@dates.\BPN@year \space in \BPN@location} 
+		{Version \BPN@version \space Revision \BPN@revision \par}
+		\vspace{1em}
+		
+		{\BPN@logo\par}
+		
+		{\centering Archive-ID: \BPN@archive \space DOI: \BPN@doi \par}
+		
+		% Author
+		\begin{center}%
+			\lineskip .5em%
+			\newcounter{authnum}%
+			\setcounter{authnum}{0}
+			\whileboolexpr%
+			{ test {\ifnumcomp{\value{authnum}}{<}{\theauthcount}} }%
+			{%
+				\stepcounter{authnum}%
+				\mbox{
+					\normalsize\textbf{\csuse{BPN@author\theauthnum}\textsuperscript{\alph{authnum}}}%
+					\ifboolexpr%
+					{ test {\ifnumcomp{\value{authnum}}{=}{\thecontactauthor}}}%
+					{\textsuperscript{\kern-1pt$\conv$}}%
+					{}%
+					\ifboolexpr%
+					{ test {\ifnumcomp{\value{authnum}}{<}{\theauthcount}}}%
+					{,~}%
+					{}%
+				}
+			}%
+		\end{center}%
+		
+		% Author affiliations
+		{\small\itshape\selectfont%
+			\setcounter{authnum}{0}
+			\whileboolexpr%
+			{ test {\ifnumcomp{\value{authnum}}{<}{\theauthcount}} }%
+			{%
+				\stepcounter{authnum}%
+				\parbox{0.75em}{\normalfont\selectfont\textsuperscript{\alph{authnum}}}\csuse{BPN@affiliation\theauthnum},~\uline{\csuse{BPN@email\theauthnum}}\par
+			}%
+			\parbox{0.75em}{\textsuperscript{*}}Corresponding Author
+		}
+		
+		{\BPN@abstract\par}
+		\vspace{3em}
+	\end{titlepage}
 }
 
 
@@ -276,7 +288,7 @@
 \pagestyle{fancy}
 
 % Define custom header
-\fancyhead[L]{{\footnotesize\color{gray}\BPN@copyright}}
+\fancyhead[L]{{\footnotesize\color{gray} Banko Version: 1.5.3 Beta \BPN@copyright}}
 \fancyhead[R]{{\footnotesize\color{gray}\BPN@dates.\BPN@year}} % Right-aligned header
 
 % Define custom footer
@@ -287,6 +299,16 @@
 \renewcommand{\headrulewidth}{0pt}
 \renewcommand{\footrulewidth}{0pt} % To remove the footer line
 
+% Roman Number for Pages
+\newcommand{\romanPage}{
+	\pagenumbering{roman}
+}
+
+\newcommand{\arabicPage}{
+	\pagenumbering{arabic}
+}
+
+
 % Footnotes
 \renewcommand*{\thefootnote}{\footnotesize\color{important}\Roman{footnote}}
 
@@ -294,7 +316,22 @@
 \raggedbottom
 
 % Define custom fonts
-\setmainfont{TeX Gyre Termes}
+\setmainfont{Times New Roman}%[Scale= 1.1] % Times New Roman, Scale = 1
+
+%\setmainfont[
+%	Path = ./fonts/funnelsans/, % Directory where the font files are located
+%	UprightFont = *-Regular.ttf,
+%	BoldFont = *-Bold.ttf,
+%	ItalicFont = *-Italic.ttf,
+%	BoldItalicFont = *-BoldItalic.ttf,
+%	Ligatures = TeX, % Enables TeX-style ligatures
+%	Numbers = Lining, % Uses lining numbers (default)
+%	Scale = 1.0, % Adjust font size if needed
+%	LetterSpace = 1.5, % Adds letter spacing for readability
+%	SmallCapsFeatures = {LetterSpace=2.0}, % Small caps spacing
+%	BoldFeatures = {LetterSpace=1.0}, % Letter spacing for bold
+%	ItalicFeatures = {Contextuals=Swash}
+%]{FunnelSans}
 
 
 %MATH
@@ -317,42 +354,42 @@
 
 % Equation spacing
 \g@addto@macro\normalsize{%
-  \setlength\abovedisplayskip{2.5pt}%
-  \setlength\belowdisplayskip{7.5pt}%
-  \setlength\abovedisplayshortskip{2.5pt}%
-  \setlength\belowdisplayshortskip{7.5pt}%
+	\setlength\abovedisplayskip{2.5pt}%
+	\setlength\belowdisplayskip{7.5pt}%
+	\setlength\abovedisplayshortskip{2.5pt}%
+	\setlength\belowdisplayshortskip{7.5pt}%
 }
 
 % Format
 \RequirePackage[
-    margin=2.5cm,
-    top=2.5cm,
-    headsep=1cm,
-    bottom=2.5cm
+margin=2.5cm,
+top=2.5cm,
+headsep=1cm,
+bottom=2.5cm
 ]{geometry}
 
 % Section
 \newcommand{\sectionfont}{\normalfont}
 
 \titleformat{\section}[block]
-  {\normalfont\normalsize\bfseries\sectionfont}
-  {\thesection}{1em}{}
-  [\titlerule] % Add a rule under the section title
+{\normalfont\normalsize\bfseries\sectionfont}
+{\thesection}{1em}{}
+[\titlerule] % Add a rule under the section title
 
 \titleformat{\subsection}[block]
-  {\normalfont\normalsize\itshape}
-  {\thesubsection}{1em}{}
-  [] % No rule after subsection
+{\normalfont\normalsize\itshape}
+{\thesubsection}{1em}{}
+[] % No rule after subsection
 
 \titleformat{\subsubsection}[block]
-  {\normalfont\normalsize\itshape}
-  {\thesubsubsection}{1em}{}
-  [] % No rule after subsubsection
+{\normalfont\normalsize\itshape}
+{\thesubsubsection}{1em}{}
+[] % No rule after subsubsection
 
 \titleformat{\part}[block]
-  {\normalfont\Large\bfseries}
-  {\thepart}{1em}{}
-  [\titlerule] % No rule after subsubsection
+{\normalfont\Large\bfseries}
+{\thepart}{1em}{}
+[\titlerule] % No rule after subsubsection
 
 % Custom section command with hierarchical numbering style x.y.z
 \renewcommand{\thesection}{\arabic{section}} % Section format: 1, 2, 3...
@@ -368,32 +405,32 @@
 
 % Define a command to set the headline color dynamically
 \newcommand{\setimportant}[1]{%
-  \renewcommand{\important}{#1}%
+	\renewcommand{\important}{#1}%
 }
 
 % Custom section header with dynamic headline color
 \newcommand{\importantsection}[1]{%
-  \section{\textcolor{important}{#1}}%
+	\section{\textcolor{important}{#1}}%
 }
 
 \newcommand{\tipsection}[1]{%
-  \section{\textcolor{tip}{#1}}%
+	\section{\textcolor{tip}{#1}}%
 }
 
 \newcommand{\warningsection}[1]{%
-  \section{\color{orange}{#1}}%
+	\section{\color{orange}{#1}}%
 }
 
 \newcommand{\examplesection}[1]{%
-  \section{\itshape\color{blue}{#1}}%
+	\section{\itshape\color{blue}{#1}}%
 }
 
 \newcommand{\resultsection}[1]{%
-  \section{\itshape\textcolor{result}{#1}}%
+	\section{\itshape\textcolor{result}{#1}}%
 }
 
 \newcommand{\questionsection}[1]{%
-  \section{\itshape\color{gray}{#1}}%
+	\section{\itshape\color{gray}{#1}}%
 }
 
 % Boxes
@@ -404,84 +441,84 @@
 \newcounter{ctrSummary}
 
 \newcommand{\formattingBoxNumber}[1]{%
-    \ifnum\value{subsection}=0
-        \ifnum\value{subsubsection}=0
-            \thesection.#1
-        \else
-            \thesubsection.#1
-        \fi
-    \else
-        \ifnum\value{subsubsection}=0
-            \thesubsection.#1
-        \else
-            \thesubsubsection.#1
-        \fi
-    \fi
+	\ifnum\value{subsection}=0
+	\ifnum\value{subsubsection}=0
+	\thesection.#1
+	\else
+	\thesubsection.#1
+	\fi
+	\else
+	\ifnum\value{subsubsection}=0
+	\thesubsection.#1
+	\else
+	\thesubsubsection.#1
+	\fi
+	\fi
 }
 
 
 \newcommand{\definitionAN}[3]{ % Additional Notes
-    \refstepcounter{ctrDefinition}
-    \begin{tcolorbox}[title=\textbf{\formattingBoxNumber{\thectrDefinition}} Definition: #1,
-    title filled=false,
-    colback=black!3!white,
-    colframe=black!75!black]
-    #2
-    \tcblower
-    #3
-    \end{tcolorbox}
+	\refstepcounter{ctrDefinition}
+	\begin{tcolorbox}[title=\textbf{\formattingBoxNumber{\thectrDefinition}} Definition: #1,
+		title filled=false,
+		colback=black!3!white,
+		colframe=black!75!black]
+		#2
+		\tcblower
+		#3
+	\end{tcolorbox}
 }
 
 \newcommand{\definition}[2]{
-    \refstepcounter{ctrDefinition}
-    \begin{tcolorbox}[title=\textbf{\formattingBoxNumber{\thectrDefinition}} Definition: #1,
-    title filled=false,
-    colback=black!3!white,
-    colframe=black!75!black]
-    #2
-    \end{tcolorbox}
+	\refstepcounter{ctrDefinition}
+	\begin{tcolorbox}[title=\textbf{\formattingBoxNumber{\thectrDefinition}} Definition: #1,
+		title filled=false,
+		colback=black!3!white,
+		colframe=black!75!black]
+		#2
+	\end{tcolorbox}
 }
 
 \newcommand{\exercise}[2]{ % Without Solution and Explanation
-    \refstepcounter{ctrExercise}
-    \begin{tcolorbox}[title=\textbf{\formattingBoxNumber{\thectrExercise}} Exercise: #1,
-    title filled=false,
-    colback=blue!3!white,
-    colframe=blue!50!black]
-    #2
-    \end{tcolorbox}
+	\refstepcounter{ctrExercise}
+	\begin{tcolorbox}[title=\textbf{\formattingBoxNumber{\thectrExercise}} Exercise: #1,
+		title filled=false,
+		colback=blue!3!white,
+		colframe=blue!50!black]
+		#2
+	\end{tcolorbox}
 }
 
 \newcommand{\exerciseWS}[3]{ % With Solution and Explanation
-    \refstepcounter{ctrExercise}
-    \begin{tcolorbox}[title=\textbf{\formattingBoxNumber{\thectrExercise}} Exercise: #1,
-    title filled=false,
-    colback=blue!3!white,
-    colframe=blue!50!black]
-    #2
-    \tcblower
-    #3
-    \end{tcolorbox}
+	\refstepcounter{ctrExercise}
+	\begin{tcolorbox}[title=\textbf{\formattingBoxNumber{\thectrExercise}} Exercise: #1,
+		title filled=false,
+		colback=blue!3!white,
+		colframe=blue!50!black]
+		#2
+		\tcblower
+		#3
+	\end{tcolorbox}
 }
 
 \newcommand{\introduction}[2]{
-    \refstepcounter{ctrIntroduction}
-    \begin{tcolorbox}[title=\textbf{\formattingBoxNumber{\thectrIntroduction}} #1,
-    title filled=false,
-    colback=purple!3!white,
-    colframe=purple!75!black]
-    #2
-    \end{tcolorbox}
+	\refstepcounter{ctrIntroduction}
+	\begin{tcolorbox}[title=\textbf{\formattingBoxNumber{\thectrIntroduction}} #1,
+		title filled=false,
+		colback=purple!3!white,
+		colframe=purple!75!black]
+		#2
+	\end{tcolorbox}
 }
 
 \newcommand{\summary}[2]{
-    \refstepcounter{ctrSummary}
-    \begin{tcolorbox}[title=\textbf{\formattingBoxNumber{\thectrSummary}} #1,
-    title filled=false,
-    colback=green!3!white,
-    colframe=green!40!black]
-    #2
-    \end{tcolorbox}
+	\refstepcounter{ctrSummary}
+	\begin{tcolorbox}[title=\textbf{\formattingBoxNumber{\thectrSummary}} #1,
+		title filled=false,
+		colback=green!3!white,
+		colframe=green!40!black]
+		#2
+	\end{tcolorbox}
 }
 
 % Page layout and column.
@@ -489,14 +526,14 @@
 \layouttoggletrue 
 % Toggle layout definition
 \newcommand{\togglelayout}{%
-\clearpage % Ensure site correct layout
-  \iflayouttoggle
-    \onecolumn
-    \layouttogglefalse
-  \else
-    \twocolumn
-    \layouttoggletrue
-  \fi
+	\clearpage % Ensure site correct layout
+	\iflayouttoggle
+	\onecolumn
+	\layouttogglefalse
+	\else
+	\twocolumn
+	\layouttoggletrue
+	\fi
 }
 
 % Solution, Question etc.
@@ -505,27 +542,60 @@
 \newcounter{solution}
 
 \newcommand\Problem{%
-  \stepcounter{problem}%
-  \textbf{\theproblem.}~%
-  \setcounter{solution}{0}%
+	\stepcounter{problem}%
+	\textbf{\theproblem.}~%
+	\setcounter{solution}{0}%
 }
 
 \newcommand\TheSolution{%
-  \textbf{Solution:}\\%
+	\textbf{Solution:}\\%
 }
 
 \newcommand\ASolution{%
-  \stepcounter{solution}%
-  \textbf{Solution \thesolution:}\\%
+	\stepcounter{solution}%
+	\textbf{Solution \thesolution:}\\%
 }
 
 % Sidenotes
 
-\newcommand{\sidenote}[1]{% \sidenote{<side note>}
-  \refstepcounter{sidenote}\mbox{\textsuperscript{\alph{sidenote}}}%
-  \marginpar{\footnotesize\raggedright\strut\mbox{\textsuperscript{\alph{sidenote}} }#1}%
-}
+\RequirePackage{etoolbox}
+
+% Counter for sidenotes and list storage
 \newcounter{sidenote}
-\setlength{\marginparwidth}{.8in}
+\newcommand{\sidenote@list}{} 
+
+% Define sidenote command
+\newcommand{\sidenote}[1]{%
+	\refstepcounter{sidenote}% Increment counter
+	\mbox{\textsuperscript{\color{important}\alph{sidenote}}}% Show reference in text
+	\marginpar{\footnotesize\raggedright\strut
+		\textsuperscript{\color{important}\alph{sidenote}} #1}% Display sidenote in margin
+	% Store sidenote for Table of Sidenotes without repeating numbers
+	\g@addto@macro\sidenote@list{%
+		\item Sidenote:  #1%
+	}
+}
+
+% Command to generate Table of Sidenotes
+\newcommand{\sidenotestable}{%
+	\newpage
+	\section*{Table of Sidenotes}
+	\begin{enumerate}
+		\sidenote@list % Insert stored sidenotes
+	\end{enumerate}
+}
+
+% Set margin width and spacing
+\setlength{\marginparwidth}{.7in}
+\setlength{\marginparsep}{.2in}
 \reversemarginpar
-\newcommand{\note}[1]{[#1]}
+
+\newcommand{\citeBlock}[2]{
+	\itshape "#1" \hfill -- #2
+}
+
+\newcommand\elec{\mathrm{e^-}}
+\newcommand\prot{\mathrm{p^+}}
+\newcommand\neut{\mathrm{n^0}}
+
+\makeatother
