@@ -131,7 +131,7 @@ citestyle=numeric-comp
 % \renewcommand{\rubysize}{1}
 \renewcommand{\rubysep}{0.1ex}
 
-\RequirePackage[german]{babel}
+\RequirePackage[english]{babel}
 
 % Russian and Cyrillic
 % High Priority - I am to bad.
@@ -160,6 +160,7 @@ citestyle=numeric-comp
 \newcommand{\BPNcopyright}[2]{\def\BPN@copyright{Copyright \copyright\,#1 by #2. All rights reserved.}}
 \newcommand*{\BPNarchive}[1]{\def\BPN@archive{#1}}\BPNarchive{}
 \newcommand*{\BPNundertitle}[1]{\def\BPN@undertitle{#1}}\BPNundertitle{}
+\newcommand*{\BPNsubundertitle}[1]{\def\BPN@subundertitle{#1}}\BPNsubundertitle{}
 \newcommand*{\BPNRevision}[1]{\def\BPN@revision{#1}}\BPNRevision{}
 \newcommand*{\BPNVersion}[1]{\def\BPN@version{#1}}\BPNVersion{}
 \newcommand*{\BPNLogo}[1]{\def\BPN@logo{#1}}\BPNLogo{}
@@ -180,6 +181,31 @@ citestyle=numeric-comp
 	\raggedleft
 	\fi\fi
 }
+
+\newcommand{\goDown}{%
+	\ifnum\BPN@mode=0
+	\\
+	\fi
+}
+
+\newcommand{\spaceV}[0]{
+	\ifnum\BPN@mode=0
+	\vspace{1em}
+	\else\ifnum\BPN@mode=1
+	\vspace{0.3em}
+	\else
+	\vspace{0.3em}
+	\fi\fi
+}
+
+\newcommand{\subundertitleFormat}{%
+	\ifx\BPN@subundertitle\empty
+	% Do nothing
+	\else
+	\\ \BPN@subundertitle
+	\fi
+}
+
 
 \renewcommand{\abstract}[1]{
 	\def\BPN@abstract{
@@ -208,7 +234,7 @@ citestyle=numeric-comp
 % Define a custom title page style
 \fancypagestyle{titlepage}{
 	\fancyhf{} % Clear all header and footer fields
-	\fancyhead[C]{{\footnotesize\color{gray} Banko Version: 1.5.3 Beta \BPN@copyright}} % Custom header
+	\fancyhead[C]{{\footnotesize\color{gray} Banko Version: 1.5.4 Beta \BPN@copyright}} % Custom header
 	\renewcommand{\headrulewidth}{0pt} % Header line thickness
 	\renewcommand{\footrulewidth}{0pt} % No footer line
 	
@@ -234,8 +260,8 @@ citestyle=numeric-comp
 		\thispagestyle{titlepage}
 		\alignmentMode
 		{\huge \bfseries{\@title}\par}
-		\vspace{1em}
-		{\Large \bfseries{\BPN@undertitle}} {\itshape on \BPN@dates.\BPN@year \space in \BPN@location} 
+		\spaceV
+		{\Large \bfseries{\BPN@undertitle}  \bfseries{\large\subundertitleFormat{} }} {\goDown \itshape on \BPN@dates \space in \BPN@location}
 		{Version \BPN@version \space Revision \BPN@revision \par}
 		\vspace{1em}
 		
@@ -288,8 +314,8 @@ citestyle=numeric-comp
 \pagestyle{fancy}
 
 % Define custom header
-\fancyhead[L]{{\footnotesize\color{gray} Banko Version: 1.5.3 Beta \BPN@copyright}}
-\fancyhead[R]{{\footnotesize\color{gray}\BPN@dates.\BPN@year}} % Right-aligned header
+\fancyhead[L]{{\footnotesize\color{gray} Banko Version: 1.5.4 Beta \BPN@copyright}}
+\fancyhead[R]{{\footnotesize\color{gray}\BPN@dates}} % Right-aligned header
 
 % Define custom footer
 \fancyfoot[L]{{\footnotesize\color{gray}Archive ID: \BPN@year--\BPN@archive \quad Title: \@title}}
@@ -597,5 +623,12 @@ bottom=2.5cm
 \newcommand\elec{\mathrm{e^-}}
 \newcommand\prot{\mathrm{p^+}}
 \newcommand\neut{\mathrm{n^0}}
+
+\newcommand{\appendices}{
+	\clearpage
+	\appendix
+	\renewcommand{\thepart}{\Alph{part}} % Change part numbering to 
+	\setcounter{part}{0} % Reset part counter to start from A
+}
 
 \makeatother
