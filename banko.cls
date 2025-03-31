@@ -106,18 +106,18 @@ citestyle=numeric-comp
 \RequirePackage{xeCJK}
 
 % Automatic font setup for Japanese, Chinese, and Korean
-%\setCJKmainfont{Noto Serif KR}[  % Set default to Korean
-%Script=Hangul,
-%Language=Korean
-%]
-%\setCJKfallbackfamilyfont{\CJKrmdefault}{Noto Serif JP}[  % Fallback for Japanese
-%Script=Kana,
-%Language=Japanese
-%]
-%\setCJKfallbackfamilyfont{\CJKrmdefault}{SimSun}[  % Fallback for Chinese
-%Script=Han,
-%Language=Chinese
-%]
+\setCJKmainfont{Noto Serif KR}[  % Set default to Korean
+Script=Hangul,
+Language=Korean
+]
+\setCJKfallbackfamilyfont{\CJKrmdefault}{Noto Serif JP}[  % Fallback for Japanese
+Script=Kana,
+Language=Japanese
+]
+\setCJKfallbackfamilyfont{\CJKrmdefault}{SimSun}[  % Fallback for Chinese
+Script=Han,
+Language=Chinese
+]
 
 % Sans-serif and monospace font setup
 %\setCJKsansfont{Noto Serif KR}[Script=Hangul]
@@ -343,22 +343,6 @@ citestyle=numeric-comp
 
 % Define custom fonts
 \setmainfont{Times New Roman}%[Scale= 1.1] % Times New Roman, Scale = 1
-
-%\setmainfont[
-%	Path = ./fonts/funnelsans/, % Directory where the font files are located
-%	UprightFont = *-Regular.ttf,
-%	BoldFont = *-Bold.ttf,
-%	ItalicFont = *-Italic.ttf,
-%	BoldItalicFont = *-BoldItalic.ttf,
-%	Ligatures = TeX, % Enables TeX-style ligatures
-%	Numbers = Lining, % Uses lining numbers (default)
-%	Scale = 1.0, % Adjust font size if needed
-%	LetterSpace = 1.5, % Adds letter spacing for readability
-%	SmallCapsFeatures = {LetterSpace=2.0}, % Small caps spacing
-%	BoldFeatures = {LetterSpace=1.0}, % Letter spacing for bold
-%	ItalicFeatures = {Contextuals=Swash}
-%]{FunnelSans}
-
 
 %MATH
 % Symbols
