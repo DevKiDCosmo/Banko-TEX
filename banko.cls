@@ -140,17 +140,17 @@ UprightFont = *-Regular
 ]
 
 % Sans-serif und Monospace Schriftarten
-\setCJKsansfont[
-Path = ./fonts/,
-Extension = .ttf,
-UprightFont = *-Regular
-]{NotoSansKR}
+%\setCJKsansfont[
+%Path = ./fonts/,
+%Extension = .ttf,
+%UprightFont = *-Regular
+%]{NotoSansKR}
 
-\setCJKmonofont[
-Path = ./fonts/,
-Extension = .ttf,
-UprightFont = *-Regular
-]{NotoSansMonoKR}
+%\setCJKmonofont[
+%Path = ./fonts/,
+%Extension = .ttf,
+%UprightFont = *-Regular
+%]{NotoSansMonoKR}
 
 
 % Line spacing and compatibility
