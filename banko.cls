@@ -105,23 +105,48 @@ citestyle=numeric-comp
 
 \RequirePackage{xeCJK}
 
-% Automatic font setup for Japanese, Chinese, and Korean
-\setCJKmainfont{Noto Serif KR}[  % Set default to Korean
-Script=Hangul,
-Language=Korean
-]
-\setCJKfallbackfamilyfont{\CJKrmdefault}{Noto Serif JP}[  % Fallback for Japanese
-Script=Kana,
-Language=Japanese
-]
-\setCJKfallbackfamilyfont{\CJKrmdefault}{SimSun}[  % Fallback for Chinese
-Script=Han,
-Language=Chinese
+% Hauptschriftart für CJK: Koreanisch
+\setCJKfallbackfamilyfont{\CJKrmdefault}{NotoSerifKR}[
+	Path = ./fonts/,
+	Extension = .ttf,
+	UprightFont = *-Regular
 ]
 
-% Sans-serif and monospace font setup
-%\setCJKsansfont{Noto Serif KR}[Script=Hangul]
-%\setCJKmonofont{Noto Serif KR}[Script=Hangul]
+
+\setCJKfallbackfamilyfont{}{NotoSerifJP}[
+	Path = ./fonts/,
+	Extension = .ttf,
+	UprightFont = *-Regular
+%	BoldFont = *-SemiBold
+]
+
+
+% Fallback für Chinesisch
+\setCJKfallbackfamilyfont{}{NotoSerifTC}[
+	Path = ./fonts/,
+	Extension = .ttf,
+	UprightFont = *-Regular
+]
+
+\setCJKfallbackfamilyfont{}{NotoSerifSC}[
+Path = ./fonts/,
+Extension = .ttf,
+UprightFont = *-Regular
+]
+
+% Sans-serif und Monospace Schriftarten
+\setCJKsansfont[
+	Path = ./fonts/,
+	Extension = .ttf,
+	UprightFont = *-Regular
+]{NotoSansKR}
+
+\setCJKmonofont[
+	Path = ./fonts/,
+	Extension = .ttf,
+	UprightFont = *-Regular
+]{NotoSansMonoKR}
+
 
 % Line spacing and compatibility
 \linespread{1.1} % Adjust spacing for CJK text
