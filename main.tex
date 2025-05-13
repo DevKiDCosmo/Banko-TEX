@@ -1,52 +1,110 @@
-
 \documentclass{banko}
-\usepackage{graphicx} % Required for inserting images
+
+\usepackage{graphicx}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{csquotes}
+\usepackage{hyperref}
 \usepackage{lipsum}
-\usepackage{amsmath}
-\usepackage{amssymb}
-\usepackage{ulem}
 
-\title{番子 Banko Template with International Support with a to long title}
-\BPNauthor*{Duy Nam Schlitz}{Deparment and Affiliation}{duynamschlitz@gmail.com}
+\title{番子 Banko Showcase Template – Multilingual, Math, and Structure}
+\BPNauthor*{Duy Nam Schlitz}{Institute for Symbolic Applications and Department for Mathamatical Applied Sciences for Nature Observation by ISAC Sciences and Nobel Edge Fokres}{duynamschlitz@gmail.com}
 \date{January 2025}
-\BPNundertitle{A good undertitle}
-\BPNsubundertitle{A good sub undertitle}
-
+\BPNundertitle{Showcasing Document Capabilities}
+\BPNsubundertitle{Layout, Language, Logic}
 \BPNyear{2025}
 \BPNlocation{Frankfurt}
 \BPNdates{\today}
 \BPNcopyright{2025}{Duy Nam Schlitz}
-\BPNarchive{XXXXX}
-\BPNmode{1}
+\BPNarchive{BANKO-0001}
+\BPNmode{0}
 \BPNRevision{1}
 \BPNVersion{1}
 
-\BPNLogo{
+\abstract{
+	This document demonstrates the capabilities of the `banko` LaTeX class. It supports multilingual content (CJK), mathematical typesetting, references, structured headings, and customized metadata. This belongs to a collection that also includes Sazuko and the new coming Kougi templates. By the way I am not a Japanese people but I can Japanese. \lipsum[1]
 }
 
-\abstract{Abstract}
+\hypersetup{
+	pdftitle={Banko Showcase},
+	pdfauthor={Duy Nam Schlitz},
+	pdfsubject={Template Demo},
+	pdfkeywords={LaTeX, Template, Multilingual, Math, Banko}
+}
 
-\bibliography{.bib}
+\bibliography{main.bib}
 
 \begin{document}
-
-\maketitle
-
-\romanPage
-
-\tableofcontents
-
-\clearpage
-\arabicPage
-
-\newpage
-
-\section{Introduction}
-
-\part{Source}
-
-\printbibliography{}
-
-\sidenotestable
-
+	
+	\maketitle
+	
+	\romanPage
+	
+	\tableofcontents
+	
+	\clearpage
+	\arabicPage
+	
+	\section{Introduction}
+	This is a demo using the \textbf{banko.cls} class.
+	
+	日本語テキスト — 한국어 문장 — 中文内容测试 - 中文內容測試.
+	
+	\begin{quote}
+		“LaTeX is a document preparation system for high-quality typesetting.” — \textit{Donald E. Knuth}
+	\end{quote}
+	
+	\section{Mathematics}
+	Inline example: \( E = mc^2 \)
+	
+	Display example:
+	\[
+	\int_{-\infty}^\infty e^{-x^2} dx = \sqrt{\pi}
+	\]
+	
+	\subsection{Aligned Equations}
+	\begin{align}
+		f(x) &= x^2 + 2x + 1 \\
+		&= (x + 1)^2
+	\end{align}
+	
+	\section{Table Example}
+	\begin{table}[h!]
+		\centering
+		\begin{tabular}{@{}lll@{}}
+			\toprule
+			Language   & Hello       & Script         \\ \midrule
+			English    & Hello       & Latin          \\
+			Japanese   & こんにちは   & Kanji/Kana     \\
+			Korean     & 안녕하세요   & Hangul         \\
+			Chinese    & 你好         & Hanzi          \\
+			\bottomrule
+		\end{tabular}
+		\caption{Multilingual greetings}
+	\end{table}
+	
+	\section{Figure Example}
+	\begin{figure}[h!]
+		\centering
+		\includegraphics[width=0.4\textwidth]{example-image}
+		\caption{Example image (replace with actual image)}
+	\end{figure}
+	
+	\section{Conclusion}
+	This showcase demonstrates the international and scientific capabilities of the {banko} class. It supports academic writing in multiple languages with proper formatting and metadata.
+	
+	% texttt banko
+	
+	% \part{References}
+	% Uncomment when bibliography file exists
+	% \printbibliography
+	
+	\begin{figure*}
+		\centering
+		\includegraphics[width=0.8\textwidth]{example-image}
+		\caption{Example image (replace with actual image)}
+	\end{figure*}
+	
+	\lipsum[1-10]
+	
 \end{document}

@@ -40,6 +40,9 @@ compact,
 \RequirePackage{float}
 \RequirePackage{microtype}
 \RequirePackage{tikz}
+\usetikzlibrary{cd}
+
+\RequirePackage{mathrsfs}
 
 % Math typesetting
 \RequirePackage{amsmath}
@@ -47,7 +50,7 @@ compact,
 \RequirePackage{amstext}
 \RequirePackage{amsfonts}
 \RequirePackage{bm}
-\RequirePackage{tcolorbox}
+\RequirePackage[most]{tcolorbox}
 
 % Math structures
 \RequirePackage{array}                                  % Arrays
@@ -105,23 +108,47 @@ citestyle=numeric-comp
 
 \RequirePackage{xeCJK}
 
-% Automatic font setup for Japanese, Chinese, and Korean
-%\setCJKmainfont{Noto Serif KR}[  % Set default to Korean
-%Script=Hangul,
-%Language=Korean
-%]
-%\setCJKfallbackfamilyfont{\CJKrmdefault}{Noto Serif JP}[  % Fallback for Japanese
-%Script=Kana,
-%Language=Japanese
-%]
-%\setCJKfallbackfamilyfont{\CJKrmdefault}{SimSun}[  % Fallback for Chinese
-%Script=Han,
-%Language=Chinese
-%]
+% Hauptschriftart für CJK: Koreanisch
+\setCJKfallbackfamilyfont{\CJKrmdefault}{NotoSerifKR}[
+Path = ./fonts/,
+Extension = .ttf,
+UprightFont = *-Regular
+]
 
-% Sans-serif and monospace font setup
-%\setCJKsansfont{Noto Serif KR}[Script=Hangul]
-%\setCJKmonofont{Noto Serif KR}[Script=Hangul]
+
+\setCJKfallbackfamilyfont{}{NotoSerifJP}[
+Path = ./fonts/,
+Extension = .ttf,
+UprightFont = *-Regular
+%	BoldFont = *-SemiBold
+]
+
+
+% Fallback für Chinesisch
+\setCJKfallbackfamilyfont{}{NotoSerifTC}[
+Path = ./fonts/,
+Extension = .ttf,
+UprightFont = *-Regular
+]
+
+\setCJKfallbackfamilyfont{}{NotoSerifSC}[
+Path = ./fonts/,
+Extension = .ttf,
+UprightFont = *-Regular
+]
+
+% Sans-serif und Monospace Schriftarten
+\setCJKsansfont[
+Path = ./fonts/,
+Extension = .ttf,
+UprightFont = *-Regular
+]{NotoSansKR}
+
+\setCJKmonofont[
+Path = ./fonts/,
+Extension = .ttf,
+UprightFont = *-Regular
+]{NotoSansMonoKR}
 
 % Line spacing and compatibility
 \linespread{1.1} % Adjust spacing for CJK text
@@ -133,9 +160,8 @@ citestyle=numeric-comp
 
 \RequirePackage[english]{babel}
 
-% Russian and Cyrillic
-% High Priority - I am to bad.
-
+% Programming
+\RequirePackage{listings}
 
 % Line Number
 \usepackage[switch]{lineno}
@@ -395,6 +421,8 @@ headsep=1cm,
 bottom=2.5cm
 ]{geometry}
 
+\RequirePackage{calc}
+
 % Section
 \newcommand{\sectionfont}{\normalfont}
 
@@ -630,6 +658,161 @@ bottom=2.5cm
 	\appendix
 	\renewcommand{\thepart}{\Alph{part}} % Change part numbering to 
 	\setcounter{part}{0} % Reset part counter to start from A
+}
+
+\newtcolorbox{twocolboxN}{
+	colframe=white, colback=white,
+	sharp corners, boxrule=0pt,
+	width=\textwidth,
+	before={\par\medskip}, after={\par\medskip},
+}
+
+% New command to create the two-column box
+\newcommand{\twocolbox}[2]{
+	\if@twocolumn
+	\importantsection{Error in Alignment of Text 1:1}
+	\textbf{\textcolor[HTML]{B22222}{Error}}: This document is in two-column mode. The two-column box is not compatible with this mode. 1:1. Content: \textbf{Column 1:} #1, \textbf{Column 2:} #2
+	\else
+	\begin{twocolboxN}
+		\begin{minipage}[t]{0.48\textwidth}
+			\textbf{Column 1:} #1
+		\end{minipage}%
+		\hfill
+		\begin{minipage}[t]{0.48\textwidth}
+			\textbf{Column 2:} #2
+		\end{minipage}
+	\end{twocolboxN}
+	\fi
+}
+
+\newcommand{\twocolboxDWPL}[2]{
+	\if@twocolumn
+	\importantsection{Error in Alignment of Text 2:1 DWPL}
+	\textbf{\textcolor[HTML]{B22222}{Error}}: This document is in two-column mode. The two-column box is not compatible with this mode. 2:1. Content: \textbf{Column 1:} #1, \textbf{Column 2:} #2
+	\else
+	\begin{twocolboxN}
+		\begin{minipage}[t]{0.64\textwidth}
+			\textbf{Column 1:} #1
+		\end{minipage}%
+		\hfill
+		\begin{minipage}[t]{0.34\textwidth}
+			\textbf{Column 2:} #2
+		\end{minipage}
+	\end{twocolboxN}
+	\fi
+}
+
+
+\newcommand{\twocolboxDWPR}[2]{
+	\if@twocolumn
+	\importantsection{Error in Alignment of Text 1:2 DWPR}
+	\textbf{\textcolor[HTML]{B22222}{Error}}: This document is in two-column mode. The two-column box is not compatible with this mode. 1:2. Content: \textbf{Column 1:} #1, \textbf{Column 2:} #2
+	\else
+	\begin{twocolboxN}
+		\begin{minipage}[t]{0.34\textwidth}
+			\textbf{Column 1:} #1
+		\end{minipage}%
+		\hfill
+		\begin{minipage}[t]{0.64\textwidth}
+			\textbf{Column 2:} #2
+		\end{minipage}
+	\end{twocolboxN}
+	\fi
+}
+
+\newcommand{\twocolboxKWPL}[2]{
+	\if@twocolumn
+	\importantsection{Error in Alignment of Text 3:1 KWPL}
+	\textbf{\textcolor[HTML]{B22222}{Error}}: This document is in two-column mode. The two-column box is not compatible with this mode. 3:1. Content: \textbf{Column 1:} #1, \textbf{Column 2:} #2
+	\else
+	\begin{twocolboxN}
+		\begin{minipage}[t]{0.74\textwidth}
+			\textbf{Column 1:} #1
+		\end{minipage}%
+		\hfill
+		\begin{minipage}[t]{0.24\textwidth}
+			\textbf{Column 2:} #2
+		\end{minipage}
+	\end{twocolboxN}
+	\fi
+}
+
+
+\newcommand{\twocolboxKWPR}[2]{
+	\if@twocolumn
+	\importantsection{Error in Alignment of Text 1:3 KWPR}
+	\textbf{\textcolor[HTML]{B22222}{Error}}: This document is in two-column mode. The two-column box is not compatible with this mode. 1:3. Content: \textbf{Column 1:} #1, \textbf{Column 2:} #2
+	\else
+	\begin{twocolboxN}
+		\begin{minipage}[t]{0.24\textwidth}
+			\textbf{Column 1:} #1
+		\end{minipage}%
+		\hfill
+		\begin{minipage}[t]{0.74\textwidth}
+			\textbf{Column 2:} #2
+		\end{minipage}
+	\end{twocolboxN}
+	\fi
+}
+
+\definecolor{codered}{RGB}{220, 50, 47}
+
+\definecolor{codebg}{RGB}{245, 245, 245}
+
+\tcbset{
+	mycodebox/.style={
+		colback=codebg,
+		colframe=black!30,
+		boxrule=0.5pt,
+		arc=2pt,
+		outer arc=2pt,
+		boxsep=5pt,
+		left=5pt,
+		right=5pt,
+		top=5pt,
+		bottom=5pt,
+		enhanced,
+		breakable,
+		sharp corners,
+	}
+}
+
+\newcommand{\code}[1]{%
+	\begin{tcolorbox}[mycodebox]
+		\textcolor{codered}{\texttt{#1}}
+	\end{tcolorbox}
+}
+
+\definecolor{codered}{RGB}{220, 50, 47}
+\definecolor{codebg}{RGB}{245, 245, 245}
+
+\tcbset{highlight code inline/.style={
+		enhanced,
+		boxsep=0pt,
+		sharp corners,
+		colback=codebg,
+		colframe=codebg,
+		boxrule=0pt,
+		borderline west={0pt}{0pt}{codebg},
+		borderline east={0pt}{0pt}{codebg},
+		frame empty,
+		interior style={fill=codebg},
+		overlay={},
+		before upper={\let\item\@item},
+		breakable,
+		size=fbox,
+		box align=base,
+		halign=left,
+		valign=center,
+}}
+
+% Makro für inline-Code mit Umbruch
+\newtcbox{\codeIN}{highlight code inline,
+	on line,
+	left=2pt, right=2pt, top=1pt, bottom=1pt,
+	nobeforeafter,
+	coltext=codered,
+	fontupper=\ttfamily\footnotesize,
 }
 
 \makeatother

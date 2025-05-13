@@ -112,46 +112,13 @@ citestyle=numeric-comp
 
 \RequirePackage{xeCJK}
 
-% Hauptschriftart für CJK: Koreanisch
-\setCJKfallbackfamilyfont{\CJKrmdefault}{NotoSerifJP}[
-Path = ./fonts/,
-Extension = .ttf,
-UprightFont = *-Regular
+
+\setCJKmainfont{NotoSerifCJK}[
+Path=./fonts/,
+Extension=.ttc,
+UprightFeatures	= {FontIndex=10},
+BoldFeatures    = {FontIndex=40}
 ]
-
-\setCJKfallbackfamilyfont{}{NotoSerifKR}[
-Path = ./fonts/,
-Extension = .ttf,
-UprightFont = *-Regular
-]
-
-
-% Fallback für Chinesisch
-\setCJKfallbackfamilyfont{}{NotoSerifTC}[
-Path = ./fonts/,
-Extension = .ttf,
-UprightFont = *-Regular
-]
-
-\setCJKfallbackfamilyfont{}{NotoSerifSC}[
-Path = ./fonts/,
-Extension = .ttf,
-UprightFont = *-Regular
-]
-
-% Sans-serif und Monospace Schriftarten
-%\setCJKsansfont[
-%Path = ./fonts/,
-%Extension = .ttf,
-%UprightFont = *-Regular
-%]{NotoSansKR}
-
-%\setCJKmonofont[
-%Path = ./fonts/,
-%Extension = .ttf,
-%UprightFont = *-Regular
-%]{NotoSansMonoKR}
-
 
 % Line spacing and compatibility
 \linespread{1.1} % Adjust spacing for CJK text
@@ -292,7 +259,7 @@ UprightFont = *-Regular
 	\begin{titlepage}
 		\thispagestyle{titlepage}
 		\alignmentMode
-		{\huge \bfseries{\@title}\par}
+		{\DMSerifDisplay \huge \bfseries{\@title}\par}
 		\spaceV
 		{\Large \bfseries{\BPN@undertitle}  \bfseries{\large\subundertitleFormat{} }} {\goDown \itshape on \BPN@dates \space in \BPN@location}
 		{Version \BPN@version \space Revision \BPN@revision \par}
@@ -377,6 +344,22 @@ UprightFont = *-Regular
 % Define custom fonts
 \setmainfont{Times New Roman}%[Scale= 1.1] % Times New Roman, Scale = 1
 
+
+%\setmainfont{EBGaramond}[
+%Path=./fonts/EBGaramond/static/,
+%Extension=.ttf,
+%UprightFont=*-Regular,
+%ItalicFont=*-Italic,
+%BoldFont=*-SemiBold,
+%BoldItalicFont=*-BoldItalic
+%]
+
+\newfontfamily{\DMSerifDisplay}{DMSerifDisplay}[
+Path=./fonts/DMSerifDisplay/,
+Extension=.ttf,
+UprightFont=*-Regular,
+ItalicFont  = *-Italic
+]
 
 %MATH
 % Symbols
