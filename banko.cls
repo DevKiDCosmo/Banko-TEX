@@ -110,14 +110,24 @@ citestyle=numeric-comp
 \RequirePackage{caption}                                % Captions
 \RequirePackage{fmtcount}  
 
+% Tables
+\RequirePackage{tabularx}
+\RequirePackage{array}
+
+\captionsetup[table]{labelfont=bf, font=small, skip=6pt}
+\renewcommand{\arraystretch}{1.3} % Increase line spacing
+
+
 \RequirePackage{xeCJK}
 
 
 \setCJKmainfont{NotoSerifCJK}[
 Path=./fonts/,
 Extension=.ttc,
+UprightFont=*,
+BoldFont=*,
 UprightFeatures	= {FontIndex=10},
-BoldFeatures    = {FontIndex=40}
+BoldFeatures    = {FontIndex=30} % also 20
 ]
 
 % Line spacing and compatibility
@@ -229,7 +239,7 @@ BoldFeatures    = {FontIndex=40}
 	\IfBooleanT{#1}{\setcounter{contactauthor}{\theauthcount}}%
 }
 
-\def\version{1.5.5 Beta}
+\def\version{1.5.6}
 
 % Define a custom title page style
 \fancypagestyle{titlepage}{
@@ -821,6 +831,72 @@ bottom=2.5cm
 %\AtBeginEnvironment{table}{\patchCUPtables}
 %\AtBeginEnvironment{table*}{\patchCUPtables}
 
+\RequirePackage{ifthen}
+\tcbuselibrary{skins, breakable} % Für schöne und flexible Boxen
+\RequirePackage{xparse}         % Für \NewDocumentEnvironment etc.
 
 
+
+\tcbset{
+	mathblock/.style={
+		colback=gray!5,
+		colframe=gray!10,
+		coltext=black!80,
+		boxrule=0.2pt,
+		arc=2pt,
+		boxsep=5pt,
+		left=5pt, right=5pt,
+		top=-3pt,
+		bottom=5pt,
+		enhanced,
+		breakable,
+		before skip=10pt,
+		after skip=10pt,
+		valign=center,
+		overlay={
+			\vspace*{-5pt} % Inhalt 5pt nach oben ziehen
+		},
+	}
+}
+
+\NewDocumentEnvironment{mathboxenv}{}%
+{%
+	\begingroup
+
+	\begin{tcolorbox}[mathblock]%
+		}%
+		{%
+		\end{tcolorbox}%
+		\endgroup
+	}
+
+% --- Originale Umgebungen sichern ---
+\let\equationbox\equation
+\let\endequationbox\endequation
+
+\let\alignbox\align
+\let\endalignbox\endalign
+
+\let\eqnarraybox\eqnarray
+\let\endeqnarraybox\endeqnarray
+
+\let\oldDisplayMath\[
+\let\oldEndDisplayMath\]
+
+\RenewDocumentEnvironment{equation}{}%
+{\begin{mathboxenv}\equationbox}%
+	{\endequationbox\end{mathboxenv}}
+	
+\RenewDocumentEnvironment{eqnarray}{}%
+{\begin{mathboxenv}\eqnarraybox}%
+	{\endeqnarraybox\end{mathboxenv}}
+
+\RenewDocumentEnvironment{align}{}%
+{\alignbox}%
+	{\endalignbox}
+
+\renewcommand{\[}{\begin{mathboxenv}\oldDisplayMath}
+	\renewcommand{\]}{\oldEndDisplayMath\end{mathboxenv}}
+
+		
 \makeatother
