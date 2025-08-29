@@ -112,11 +112,21 @@ citestyle=numeric-comp
 
 % Tables
 \RequirePackage{tabularx}
-\RequirePackage{array}
+\RequirePackage{array}	
 
-\captionsetup[table]{labelfont=bf, font=small, skip=6pt}
+%\captionsetup[table]{labelfont=bf, font=small, skip=6pt}
 \renewcommand{\arraystretch}{1.3} % Increase line spacing
+% Caption
+\DeclareCaptionFormat{custom}{%
+	\textcolor{gray!90}{\small\textbf{#1#2}}% "Figure X" part in darker grey
+	\textcolor{gray}{\small\ #3}% caption text in lighter grey
+}
 
+\captionsetup{
+	format=custom,
+	labelfont=bf,
+	singlelinecheck=true
+}
 
 \RequirePackage{xeCJK}
 
@@ -140,15 +150,17 @@ BoldFeatures    = {FontIndex=30} % also 20
 
 \RequirePackage[english]{babel}
 
-% Programming
-\RequirePackage{listings}
+% PAGE NUMBER MODE
+% Roman Number for Pages
+\newcommand{\romanPage}{
+	\pagenumbering{roman}
+}
 
+\newcommand{\arabicPage}{
+	\pagenumbering{arabic}
+}
 
-% Line Number
-\usepackage[switch]{lineno}
-\linenumbers
-\modulolinenumbers[2]
-
+\makeatletter
 
 % Macro
 \newcommand*{\BPNyear}[1]{\def\BPN@year{#1}}\BPNyear{}
@@ -177,192 +189,35 @@ BoldFeatures    = {FontIndex=30} % also 20
 % Footers & Headers
 \RequirePackage{fancyhdr} % Load the fancyhdr package
 
-% Maketitle
-
-\newcommand{\alignmentMode}[0]{%
-	\ifnum\BPN@mode=0
-	\centering
-	\else\ifnum\BPN@mode=1
-	\raggedright
-	\else
-	\raggedleft
-	\fi\fi
-}
-
-\newcommand{\goDown}{%
-	\ifnum\BPN@mode=0
-	\\
-	\fi
-}
-
-\newcommand{\spaceV}[0]{
-	\ifnum\BPN@mode=0
-	\vspace{1em}
-	\else\ifnum\BPN@mode=1
-	\vspace{0.3em}
-	\else
-	\vspace{0.3em}
-	\fi\fi
-}
-
-\newcommand{\subundertitleFormat}{%
-	\ifx\BPN@subundertitle\empty
-	% Do nothing
-	\else
-	\\ \BPN@subundertitle
-	\fi
-}
-
-
-\renewcommand{\abstract}[1]{
-	\def\BPN@abstract{
-		\vspace*{1 em} % Adjust the space before paragraphs
-		{\alignmentMode
-			\bfseries Abstract\\
-		}
-		\vspace*{0.2em} % Adjust the space after paragraphs
-		\setlength{\parindent}{0.5cm} % Indent the first line of text
-		\setlength{\parskip}{0pt} % Single spacing        
-		\raggedright
-%		\quad#1
-		#1
-	}
-}
-
-\newcounter{authcount}
-\newcounter{contactauthor}
-\NewDocumentCommand{\BPNauthor}{ s m m m }{%
-	\stepcounter{authcount}%
-	\csdef{BPN@author\theauthcount}{#2}%
-	\csdef{BPN@affiliation\theauthcount}{#3}%
-	\csdef{BPN@email\theauthcount}{#4}%
-	\IfBooleanT{#1}{\setcounter{contactauthor}{\theauthcount}}%
-}
-
-\def\version{1.5.6}
-
-% Define a custom title page style
-\fancypagestyle{titlepage}{
-	\fancyhf{} % Clear all header and footer fields
-	\fancyhead[C]{{\footnotesize\color{gray} Banko Version: \version~\BPN@copyright}} % Custom header
-	\renewcommand{\headrulewidth}{0pt} % Header line thickness
-	\renewcommand{\footrulewidth}{0pt} % No footer line
-	
-	\fancyfoot[L]{}
-	\fancyfoot[C]{}
-	\fancyfoot[R]{{\footnotesize\color{gray}Page \thepage\ of \pageref{LastPage}}}
-}
-
-% Define the \maketitle command with the custom header and randomized title
-\makeatletter
-% Two-column document with single-column title section
-\renewcommand\maketitle{\twocolumn[
-	\begin{@twocolumnfalse}
-		\begingroup
-		\global\@topnum\z@   % Prevents figures from going at top of page.
-		\@maketitle
-		\@thanks
-		\endgroup
-	\end{@twocolumnfalse}
-	]}
-\def\@maketitle{%
-	\begin{titlepage}
-		\thispagestyle{titlepage}
-		\alignmentMode
-		{\DMSerifDisplay \huge \bfseries{\@title}\par}
-		\spaceV
-		{\Large \bfseries{\BPN@undertitle}  \bfseries{\large\subundertitleFormat{} }} {\goDown \itshape on \BPN@dates \space in \BPN@location}
-		{Version \BPN@version \space Revision \BPN@revision \par}
-		\vspace{1em}
-		
-		{\BPN@logo\par}
-		
-		{\centering Archive-ID: \BPN@archive \space DOI: \BPN@doi \par}
-		
-		% Author
-		\begin{center}%
-			\lineskip .5em%
-			\newcounter{authnum}%
-			\setcounter{authnum}{0}
-			\whileboolexpr%
-			{ test {\ifnumcomp{\value{authnum}}{<}{\theauthcount}} }%
-			{%
-				\stepcounter{authnum}%
-				\mbox{
-					\normalsize\textbf{\csuse{BPN@author\theauthnum}\textsuperscript{\alph{authnum}}}%
-					\ifboolexpr%
-					{ test {\ifnumcomp{\value{authnum}}{=}{\thecontactauthor}}}%
-					{\textsuperscript{\kern-1pt$\conv$}}%
-					{}%
-					\ifboolexpr%
-					{ test {\ifnumcomp{\value{authnum}}{<}{\theauthcount}}}%
-					{,~}%
-					{}%
-				}
-			}%
-		\end{center}%
-		
-		% Author affiliations
-		{\small\itshape\selectfont%
-			\setcounter{authnum}{0}
-			\whileboolexpr%
-			{ test {\ifnumcomp{\value{authnum}}{<}{\theauthcount}} }%
-			{%
-				\stepcounter{authnum}%
-				\parbox{0.75em}{\normalfont\selectfont\textsuperscript{\alph{authnum}}}\csuse{BPN@affiliation\theauthnum},~\uline{\csuse{BPN@email\theauthnum}}\par
-			}%
-			\parbox{0.75em}{\textsuperscript{*}}Corresponding Author
-		}
-		
-		{\BPN@abstract\par}
-		\vspace{3em}
-	\end{titlepage}
-}
-
-
-% Set up the page style for fancyhdr
+% --- Fancy Header & Footer Setup ---
 \pagestyle{fancy}
 
-% Define custom header
+% Clear default
+\fancyhf{}
+
+% Header (top of page)
 \fancyhead[L]{{\footnotesize\color{gray} Banko Version: \version~\BPN@copyright}}
 \fancyhead[R]{{\footnotesize\color{gray}\BPN@dates}} % Right-aligned header
 
-% Define custom footer
+% Footer (bottom of page)
 \fancyfoot[L]{{\footnotesize\color{gray}Archive ID: \BPN@year--\BPN@archive \quad Title: \@title}}
 \fancyfoot[C]{}
 \fancyfoot[R]{{\footnotesize\color{gray}Page \thepage\ of \pageref{LastPage}}}
 
-\renewcommand{\headrulewidth}{0pt}
-\renewcommand{\footrulewidth}{0pt} % To remove the footer line
-
-% Roman Number for Pages
-\newcommand{\romanPage}{
-	\pagenumbering{roman}
-}
-
-\newcommand{\arabicPage}{
-	\pagenumbering{arabic}
-}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
 
 
-% Footnotes
-\renewcommand*{\thefootnote}{\footnotesize\color{important}\Roman{footnote}}
+% Line thickness and color
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{gray}\leaders\hrule height \headrulewidth\hfill}}
+\renewcommand{\footrule}{\hbox to\headwidth{\color{gray}\leaders\hrule height \footrulewidth\hfill}}
 
-% Prevent vertical streching
-\raggedbottom
 
-% Define custom fonts
+\def\version{1.5.7}
 \setmainfont{Times New Roman}%[Scale= 1.1] % Times New Roman, Scale = 1
 
-
-%\setmainfont{EBGaramond}[
-%Path=./fonts/EBGaramond/static/,
-%Extension=.ttf,
-%UprightFont=*-Regular,
-%ItalicFont=*-Italic,
-%BoldFont=*-SemiBold,
-%BoldItalicFont=*-BoldItalic
-%]
 
 \newfontfamily{\DMSerifDisplay}{DMSerifDisplay}[
 Path=./fonts/DMSerifDisplay/,
@@ -370,6 +225,8 @@ Extension=.ttf,
 UprightFont=*-Regular,
 ItalicFont  = *-Italic
 ]
+
+
 
 %MATH
 % Symbols
@@ -402,18 +259,87 @@ ItalicFont  = *-Italic
 margin=2cm,
 top=2.5cm,
 headsep=1cm,
-bottom=2.5cm
+bottom=2.5cm,
+footskip=0.6in
 ]{geometry}
+\renewcommand{\headwidth}{\textwidth}
 
 \RequirePackage{calc}
+\RequirePackage{physics}
+\RequirePackage{bm}
 
+\onecolumn
+% Page layout rotation using only multicols: 1 -> 2 -> 3 -> 1...
+\RequirePackage{multicol}
+
+% --- Global toggle counter for page-level layout ---
+\newcounter{colcounter}
+\setcounter{colcounter}{1} % start with 1 column
+
+% Track if a multicol environment is currently open (global or local)
+\newif\ifmulticolopen
+\multicolopenfalse
+
+% --- Global toggle layout using only multicols ---
+\newcommand{\togglelayout}{%
+	% Close previous multicol if open
+	\ifmulticolopen
+\end{multicols}%
+\multicolopenfalse
+\fi
+
+% Switch layout based on counter
+\ifnum\value{colcounter}=1
+	\setcounter{colcounter}{2}%
+	\else\ifnum\value{colcounter}=2
+	\begin{multicols}{2}%
+		\multicolopentrue
+		\setcounter{colcounter}{3}%
+		\else
+		\begin{multicols}{3}%
+			\multicolopentrue
+			\setcounter{colcounter}{1}%
+			\fi\fi
+		}
+		
+		% --- Local toggle to specific number of columns ---
+		\newcommand{\toggleto}[1]{%
+			% Close previous multicol if open
+			\ifmulticolopen
+		\end{multicols}%
+		\multicolopenfalse
+		\fi
+		% Start new column layout locally
+		\ifnum#1=1
+		\else\ifnum#1=2
+		\begin{multicols}{2}%
+			\multicolopentrue
+		\else\ifnum#1=3
+		\begin{multicols}{3}%
+			\multicolopentrue
+		\else
+		\PackageWarning{toggleto}{Invalid column number: #1, using 1 column}%
+		\fi\fi\fi
+		}
+					
+		% --- Safety at end of document ---
+		\AtEndDocument{%
+			\ifmulticolopen
+		\end{multicols}%
+		\multicolopenfalse
+		\fi
+		}
+		
+		
 % Section
 \newcommand{\sectionfont}{\normalfont}
 
+
+
 \titleformat{\section}[block]
-{\normalfont\normalsize\bfseries\sectionfont}
+{\normalfont\Large\bfseries\sectionfont}
 {\thesection}{1em}{}
-[\titlerule] % Add a rule under the section title
+[\titlerule]
 
 \titleformat{\subsection}[block]
 {\normalfont\normalsize\itshape}
@@ -426,175 +352,15 @@ bottom=2.5cm
 [] % No rule after subsubsection
 
 \titleformat{\part}[block]
-{\normalfont\Large\bfseries}
+{\normalfont\Huge\bfseries}
 {\thepart}{1em}{}
-[\titlerule] % No rule after subsubsection
+[]
 
 % Custom section command with hierarchical numbering style x.y.z
 \renewcommand{\thesection}{\arabic{section}} % Section format: 1, 2, 3...
 \renewcommand{\thesubsection}{\thesection.\arabic{subsection}} % Subsection format: 1.1, 1.2, 1.3...
 \renewcommand{\thesubsubsection}{\thesubsection.\arabic{subsubsection}} % Subsubsection format: 1.1.1, 1.1.2, etc.
-
-
-% Define custom colors
-\definecolor{important}{HTML}{AB2341} % Default headline color (blood red)
-\definecolor{slcolor}{HTML}{882B21}   % Custom secondary color (deep red)
-\definecolor{tip}{HTML}{1A159B}   % Default Blue
-\definecolor{result}{HTML}{6BBB4C}   % Default Blue
-
-% Define a command to set the headline color dynamically
-\newcommand{\setimportant}[1]{%
-	\renewcommand{\important}{#1}%
-}
-
-% Custom section header with dynamic headline color
-\newcommand{\importantsection}[1]{%
-	\section{\textcolor{important}{#1}}%
-}
-
-\newcommand{\tipsection}[1]{%
-	\section{\textcolor{tip}{#1}}%
-}
-
-\newcommand{\warningsection}[1]{%
-	\section{\color{orange}{#1}}%
-}
-
-\newcommand{\examplesection}[1]{%
-	\section{\itshape\color{blue}{#1}}%
-}
-
-\newcommand{\resultsection}[1]{%
-	\section{\itshape\textcolor{result}{#1}}%
-}
-
-\newcommand{\questionsection}[1]{%
-	\section{\itshape\color{gray}{#1}}%
-}
-
-% Boxes
-
-\newcounter{ctrDefinition}
-\newcounter{ctrExercise}
-\newcounter{ctrIntroduction}
-\newcounter{ctrSummary}
-
-\newcommand{\formattingBoxNumber}[1]{%
-	\ifnum\value{subsection}=0
-	\ifnum\value{subsubsection}=0
-	\thesection.#1
-	\else
-	\thesubsection.#1
-	\fi
-	\else
-	\ifnum\value{subsubsection}=0
-	\thesubsection.#1
-	\else
-	\thesubsubsection.#1
-	\fi
-	\fi
-}
-
-
-\newcommand{\definitionAN}[3]{ % Additional Notes
-	\refstepcounter{ctrDefinition}
-	\begin{tcolorbox}[title=\textbf{\formattingBoxNumber{\thectrDefinition}} Definition: #1,
-		title filled=false,
-		colback=black!3!white,
-		colframe=black!75!black]
-		#2
-		\tcblower
-		#3
-	\end{tcolorbox}
-}
-
-\newcommand{\definition}[2]{
-	\refstepcounter{ctrDefinition}
-	\begin{tcolorbox}[title=\textbf{\formattingBoxNumber{\thectrDefinition}} Definition: #1,
-		title filled=false,
-		colback=black!3!white,
-		colframe=black!75!black]
-		#2
-	\end{tcolorbox}
-}
-
-\newcommand{\exercise}[2]{ % Without Solution and Explanation
-	\refstepcounter{ctrExercise}
-	\begin{tcolorbox}[title=\textbf{\formattingBoxNumber{\thectrExercise}} Exercise: #1,
-		title filled=false,
-		colback=blue!3!white,
-		colframe=blue!50!black]
-		#2
-	\end{tcolorbox}
-}
-
-\newcommand{\exerciseWS}[3]{ % With Solution and Explanation
-	\refstepcounter{ctrExercise}
-	\begin{tcolorbox}[title=\textbf{\formattingBoxNumber{\thectrExercise}} Exercise: #1,
-		title filled=false,
-		colback=blue!3!white,
-		colframe=blue!50!black]
-		#2
-		\tcblower
-		#3
-	\end{tcolorbox}
-}
-
-\newcommand{\introduction}[2]{
-	\refstepcounter{ctrIntroduction}
-	\begin{tcolorbox}[title=\textbf{\formattingBoxNumber{\thectrIntroduction}} #1,
-		title filled=false,
-		colback=purple!3!white,
-		colframe=purple!75!black]
-		#2
-	\end{tcolorbox}
-}
-
-\newcommand{\summary}[2]{
-	\refstepcounter{ctrSummary}
-	\begin{tcolorbox}[title=\textbf{\formattingBoxNumber{\thectrSummary}} #1,
-		title filled=false,
-		colback=green!3!white,
-		colframe=green!40!black]
-		#2
-	\end{tcolorbox}
-}
-
-% Page layout and column.
-\newif\iflayouttoggle
-\layouttoggletrue 
-% Toggle layout definition
-\newcommand{\togglelayout}{%
-	\clearpage % Ensure site correct layout
-	\iflayouttoggle
-	\onecolumn
-	\layouttogglefalse
-	\else
-	\twocolumn
-	\layouttoggletrue
-	\fi
-}
-
-% Solution, Question etc.
-
-\newcounter{problem}
-\newcounter{solution}
-
-\newcommand\Problem{%
-	\stepcounter{problem}%
-	\textbf{\theproblem.}~%
-	\setcounter{solution}{0}%
-}
-
-\newcommand\TheSolution{%
-	\textbf{Solution:}\\%
-}
-
-\newcommand\ASolution{%
-	\stepcounter{solution}%
-	\textbf{Solution \thesolution:}\\%
-}
-
+	
 % Sidenotes
 
 \RequirePackage{etoolbox}
@@ -629,10 +395,6 @@ bottom=2.5cm
 \setlength{\marginparsep}{.2in}
 \reversemarginpar
 
-\newcommand{\citeBlock}[2]{
-	\itshape "#1" \hfill -- #2
-}
-
 \newcommand\elec{\mathrm{e^-}}
 \newcommand\prot{\mathrm{p^+}}
 \newcommand\neut{\mathrm{n^0}}
@@ -643,105 +405,6 @@ bottom=2.5cm
 	\renewcommand{\thepart}{\Alph{part}} % Change part numbering to 
 	\setcounter{part}{0} % Reset part counter to start from A
 }
-
-\newtcolorbox{twocolboxN}{
-	colframe=white, colback=white,
-	sharp corners, boxrule=0pt,
-	width=\textwidth,
-	before={\par\medskip}, after={\par\medskip},
-}
-
-% New command to create the two-column box
-\newcommand{\twocolbox}[2]{
-	\if@twocolumn
-	\importantsection{Error in Alignment of Text 1:1}
-	\textbf{\textcolor[HTML]{B22222}{Error}}: This document is in two-column mode. The two-column box is not compatible with this mode. 1:1. Content: \textbf{Column 1:} #1, \textbf{Column 2:} #2
-	\else
-	\begin{twocolboxN}
-		\begin{minipage}[t]{0.48\textwidth}
-			\textbf{Column 1:} #1
-		\end{minipage}%
-		\hfill
-		\begin{minipage}[t]{0.48\textwidth}
-			\textbf{Column 2:} #2
-		\end{minipage}
-	\end{twocolboxN}
-	\fi
-}
-
-\newcommand{\twocolboxDWPL}[2]{
-	\if@twocolumn
-	\importantsection{Error in Alignment of Text 2:1 DWPL}
-	\textbf{\textcolor[HTML]{B22222}{Error}}: This document is in two-column mode. The two-column box is not compatible with this mode. 2:1. Content: \textbf{Column 1:} #1, \textbf{Column 2:} #2
-	\else
-	\begin{twocolboxN}
-		\begin{minipage}[t]{0.64\textwidth}
-			\textbf{Column 1:} #1
-		\end{minipage}%
-		\hfill
-		\begin{minipage}[t]{0.34\textwidth}
-			\textbf{Column 2:} #2
-		\end{minipage}
-	\end{twocolboxN}
-	\fi
-}
-
-
-\newcommand{\twocolboxDWPR}[2]{
-	\if@twocolumn
-	\importantsection{Error in Alignment of Text 1:2 DWPR}
-	\textbf{\textcolor[HTML]{B22222}{Error}}: This document is in two-column mode. The two-column box is not compatible with this mode. 1:2. Content: \textbf{Column 1:} #1, \textbf{Column 2:} #2
-	\else
-	\begin{twocolboxN}
-		\begin{minipage}[t]{0.34\textwidth}
-			\textbf{Column 1:} #1
-		\end{minipage}%
-		\hfill
-		\begin{minipage}[t]{0.64\textwidth}
-			\textbf{Column 2:} #2
-		\end{minipage}
-	\end{twocolboxN}
-	\fi
-}
-
-\newcommand{\twocolboxKWPL}[2]{
-	\if@twocolumn
-	\importantsection{Error in Alignment of Text 3:1 KWPL}
-	\textbf{\textcolor[HTML]{B22222}{Error}}: This document is in two-column mode. The two-column box is not compatible with this mode. 3:1. Content: \textbf{Column 1:} #1, \textbf{Column 2:} #2
-	\else
-	\begin{twocolboxN}
-		\begin{minipage}[t]{0.74\textwidth}
-			\textbf{Column 1:} #1
-		\end{minipage}%
-		\hfill
-		\begin{minipage}[t]{0.24\textwidth}
-			\textbf{Column 2:} #2
-		\end{minipage}
-	\end{twocolboxN}
-	\fi
-}
-
-
-\newcommand{\twocolboxKWPR}[2]{
-	\if@twocolumn
-	\importantsection{Error in Alignment of Text 1:3 KWPR}
-	\textbf{\textcolor[HTML]{B22222}{Error}}: This document is in two-column mode. The two-column box is not compatible with this mode. 1:3. Content: \textbf{Column 1:} #1, \textbf{Column 2:} #2
-	\else
-	\begin{twocolboxN}
-		\begin{minipage}[t]{0.24\textwidth}
-			\textbf{Column 1:} #1
-		\end{minipage}%
-		\hfill
-		\begin{minipage}[t]{0.74\textwidth}
-			\textbf{Column 2:} #2
-		\end{minipage}
-	\end{twocolboxN}
-	\fi
-}
-
-\definecolor{codered}{RGB}{220, 50, 47}
-
-\definecolor{codebg}{RGB}{245, 245, 245}
 
 \tcbset{
 	mycodebox/.style={
@@ -813,24 +476,6 @@ bottom=2.5cm
 \floatstyle{plaintop}
 \restylefloat{table}
 
-%\colorlet{structure@color}{black}
-%
-%\AtEndOfClass{%
-%	\colorlet{tbrowcolor}{structure@color!10}
-%	\colorlet{tbheadcolor}{structure@color!30}
-%	\arrayrulecolor{structure@color}
-%}
-%
-%
-%\newcommand{\patchCUPtables}{%
-%	\rowcolors*{1}{tbrowcolor}{tbrowcolor}%
-%	\setlength{\aboverulesep}{0pt}%
-%	\setlength{\belowrulesep}{0pt}%
-%	\setlength{\extrarowheight}{.75ex}%
-%}
-%\AtBeginEnvironment{table}{\patchCUPtables}
-%\AtBeginEnvironment{table*}{\patchCUPtables}
-
 \RequirePackage{ifthen}
 \tcbuselibrary{skins, breakable} % Für schöne und flexible Boxen
 \RequirePackage{xparse}         % Für \NewDocumentEnvironment etc.
@@ -897,6 +542,5 @@ bottom=2.5cm
 
 \renewcommand{\[}{\begin{mathboxenv}\oldDisplayMath}
 	\renewcommand{\]}{\oldEndDisplayMath\end{mathboxenv}}
-
 		
 \makeatother
