@@ -17,8 +17,8 @@
 
 \ProcessOptions\relax
 
-% Base class: article with two-column layout
-\LoadClass[twocolumn]{article}
+% Base class: article with one-column layout
+\LoadClass[onecolumn]{article}
 
 \RequirePackage{chemfig}
 
@@ -153,7 +153,7 @@ BoldFeatures    = {FontIndex=30} % also 20
 % PAGE NUMBER MODE
 % Roman Number for Pages
 \newcommand{\romanPage}{
-	\pagenumbering{roman}
+	\pagenumbering{Roman}
 }
 
 \newcommand{\arabicPage}{
@@ -183,8 +183,32 @@ BoldFeatures    = {FontIndex=30} % also 20
 \newcommand*{\BPNRevision}[1]{\def\BPN@revision{#1}}\BPNRevision{}
 \newcommand*{\BPNVersion}[1]{\def\BPN@version{#1}}\BPNVersion{}
 \newcommand*{\BPNLogo}[1]{\def\BPN@logo{#1}}\BPNLogo{}
+%\newcommand*{\BPNLogoMode}[1]{\def\BPN@logo{#1}}\BPNLogo{0}
+% For 0 std position, 1 right to the titles etc.
 
 \newcommand*{\BPNdoi}[1]{\def\BPN@doi{#1}}\BPNdoi{10.xxxx/xxxxx}
+
+\newcounter{authcount}
+\newcounter{contactauthor}
+\NewDocumentCommand{\BPNauthor}{ s m m m }{%
+	\stepcounter{authcount}%
+	\csdef{BPN@author\theauthcount}{#2}%
+	\csdef{BPN@affiliationID\theauthcount}{#3}%
+	\csdef{BPN@emailID\theauthcount}{#4}%
+	\IfBooleanT{#1}{\setcounter{contactauthor}{\theauthcount}}%
+}
+
+\newcounter{afficount}
+\NewDocumentCommand{\BPNaffiliation}{ s m }{%
+	\stepcounter{afficount}%
+	\csdef{BPN@affiliation\theafficount}{#2}%
+}
+
+\newcounter{emailcount}
+\NewDocumentCommand{\BPNemail}{ s m }{%
+	\stepcounter{emailcount}%
+	\csdef{BPN@email\theemailcount}{#2}%
+}
 
 % Footers & Headers
 \RequirePackage{fancyhdr} % Load the fancyhdr package
@@ -202,20 +226,141 @@ BoldFeatures    = {FontIndex=30} % also 20
 % Footer (bottom of page)
 \fancyfoot[L]{{\footnotesize\color{gray}Archive ID: \BPN@year--\BPN@archive \quad Title: \@title}}
 \fancyfoot[C]{}
-\fancyfoot[R]{{\footnotesize\color{gray}Page \thepage\ of \pageref{LastPage}}}
-
-\renewcommand{\headrulewidth}{0.4pt}
-\renewcommand{\footrulewidth}{0.4pt}
-
+\fancyfoot[R]{{\footnotesize\color{gray}Page {\color{important}\thepage}\ of \pageref{LastPage}}}
 
 % Line thickness and color
-\renewcommand{\headrulewidth}{0.4pt}
-\renewcommand{\footrulewidth}{0.4pt}
-\renewcommand{\headrule}{\hbox to\headwidth{\color{gray}\leaders\hrule height \headrulewidth\hfill}}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{\rulerthinkness}
 \renewcommand{\footrule}{\hbox to\headwidth{\color{gray}\leaders\hrule height \footrulewidth\hfill}}
+
+\fancypagestyle{titlepage}{
+	\fancyhf{} % Clear all header and footer fields
+	\fancyhead[C]{{\footnotesize\color{gray} Banko Version: \version~\BPN@copyright}} % Custom header
+	\renewcommand{\headrulewidth}{0pt} % Header line thickness
+	\renewcommand{\footrulewidth}{0pt} % No footer line
+	
+	\fancyfoot[L]{}
+	\fancyfoot[C]{}
+	\fancyfoot[R]{{\footnotesize\color{gray}Page {\color{important}\thepage}\ of \pageref{LastPage}}}
+}
+
+% Title page
+\RequirePackage{ragged2e} % in preamble
+\RequirePackage{eso-pic}
+
+\renewcommand{\abstract}[1]{%
+	\def\BPN@abstract{%
+		\vspace*{1em}%
+		{\noindent\bfseries Abstract\par\vspace{0.2em}}%
+		\setlength{\parindent}{0.5cm}%
+		\setlength{\parskip}{0pt}%
+		\justifying % it is optional
+		\noindent#1%
+	}%
+}
+
+\newcommand{\subundertitleFormat}{%
+	\ifx\BPN@subundertitle\empty
+	% Do nothing
+	\else
+	\\ \BPN@subundertitle
+	\fi
+}
+
+\renewcommand\maketitle{
+	%\onecolumn
+	\begingroup
+	\global\@topnum\z@   % Prevents figures from going at top of page.
+	\@maketitle
+	\@thanks
+	\endgroup
+}
+\def\@maketitle{%
+	\begingroup
+		\thispagestyle{titlepage}
+		%\AddToShipoutPictureBG*{%
+		%	\AtPageLowerLeft{%
+		%		\includegraphics[width=\paperwidth,height=\paperheight]{./BG/Cover-BG.pdf}%
+		%	}%
+		%}
+
+		{\noindent\DMSerifDisplay\huge\bfseries
+			\setlength{\baselineskip}{0.7\baselineskip}
+			\@title\par
+		}
+		{\noindent\Large \bfseries{\BPN@undertitle}  \bfseries{\large\subundertitleFormat{} }} {\itshape on \BPN@dates \space in \BPN@location}
+		{Version \BPN@version \space Revision \BPN@revision \par}
+				
+		\noindent
+		\makebox[\textwidth][c]{%
+			\begin{minipage}[c][2cm][c]{\textwidth}
+				\begin{center}
+					\lineskip .5em%
+					\newcounter{authnum}%
+					\setcounter{authnum}{0}
+					\whileboolexpr%
+					{ test {\ifnumcomp{\value{authnum}}{<}{\theauthcount}} }%
+					{%
+						\stepcounter{authnum}%
+						\mbox{								
+							\ifboolexpr%
+							{ test {\ifnumcomp{\value{authnum}}{=}{\thecontactauthor}}}%
+							{\textit{\large\csuse{BPN@author\theauthnum}\textbf{\textsuperscript{{\csuse{BPN@emailID\theauthnum}}}}\textbf{\textsuperscript{{\csuse{BPN@affiliationID\theauthnum}}}}}}%
+							{\textbf{\large\csuse{BPN@author\theauthnum}\textbf{\textsuperscript{{\csuse{BPN@emailID\theauthnum}}}}\textbf{\textsuperscript{{\csuse{BPN@affiliationID\theauthnum}}}}}}%					
+							\ifboolexpr%
+							{ test {\ifnumcomp{\value{authnum}}{=}{\thecontactauthor}}}%
+							{\textbf{\textsuperscript{\kern-1pt$\conv$}}}%
+							{}%
+							\ifboolexpr%
+							{ test {\ifnumcomp{\value{authnum}}{<}{\theauthcount}}}%
+							{,~}%
+							{}%
+						}
+					}%
+				\end{center}
+			\end{minipage}%
+		}
+				
+		\begin{multicols}{2}
+			{\small\itshape\selectfont%
+				\newcounter{affinum}
+				\whileboolexpr%
+				{ test {\ifnumcomp{\value{affinum}}{<}{\theafficount}} }%
+				{%
+					\noindent
+					\stepcounter{affinum}%
+					\parbox{0.75em}{\normalfont\selectfont\textsuperscript{\alph{affinum}}}\csuse{BPN@affiliation\theaffinum}\par
+				}%
+			}
+			
+			{\small\itshape\selectfont%
+				\newcounter{emailnum}
+				\whileboolexpr%
+				{ test {\ifnumcomp{\value{emailnum}}{<}{\theemailcount}} }%
+				{%
+					\noindent
+					\stepcounter{emailnum}%
+					\parbox{0.75em}{\normalfont\selectfont\textsuperscript{{\theemailnum}}}\uline{\csuse{BPN@email\theemailnum}}\par
+				}%
+			}
+		\end{multicols}
+		\vspace{-0.4cm}
+		\noindent\parbox{0.75em}{\textsuperscript{*}}Corresponding Author
+				
+		{\BPN@logo\par}
+		
+		{\centering Archive-ID: \BPN@archive \space DOI: \BPN@doi \par}
+		
+		{\BPN@abstract\par}
+		\vspace{1.5em}
+		%\noindent\rule{\textwidth}{\rulerthinkness}
+		\vspace{1em}	
+	\endgroup
+}
 
 
 \def\version{1.5.7}
+\def\rulerthinkness{0.4pt}
 \setmainfont{Times New Roman}%[Scale= 1.1] % Times New Roman, Scale = 1
 
 
@@ -225,8 +370,6 @@ Extension=.ttf,
 UprightFont=*-Regular,
 ItalicFont  = *-Italic
 ]
-
-
 
 %MATH
 % Symbols
@@ -253,6 +396,9 @@ ItalicFont  = *-Italic
 	\setlength\abovedisplayshortskip{2.5pt}%
 	\setlength\belowdisplayshortskip{7.5pt}%
 }
+
+% Footnotes
+\renewcommand*{\thefootnote}{\footnotesize\color{important}\Roman{footnote}}
 
 % Format
 \RequirePackage[
@@ -337,7 +483,7 @@ footskip=0.6in
 
 
 \titleformat{\section}[block]
-{\normalfont\Large\bfseries\sectionfont}
+{\normalfont\normalsize\bfseries\sectionfont}
 {\thesection}{1em}{}
 [\titlerule]
 
@@ -363,7 +509,7 @@ footskip=0.6in
 	
 % Sidenotes
 
-\RequirePackage{etoolbox}
+\RequirePackage{etoolbox, expl3}
 
 % Counter for sidenotes and list storage
 \newcounter{sidenote}
@@ -542,5 +688,43 @@ footskip=0.6in
 
 \renewcommand{\[}{\begin{mathboxenv}\oldDisplayMath}
 	\renewcommand{\]}{\oldEndDisplayMath\end{mathboxenv}}
+
+% Colors
+\definecolor{important}{HTML}{AB2341} % Default headline color (blood red)
 		
+% Better \clearpage and \newpage
+\fancypagestyle{blankpage}{
+	\fancyhf{} % Clear all header and footer fields
+	\fancyhead[C]{{\footnotesize\color{gray} Banko Version: \version~\BPN@copyright}} % Custom header
+	\renewcommand{\headrulewidth}{0pt} % Header line thickness
+	\renewcommand{\footrulewidth}{0pt} % No footer line
+	
+	\fancyfoot[L]{}
+	\fancyfoot[R]{}
+	\fancyfoot[C]{\null\vfill{\footnotesize\color{gray}Page {\color{important}\thepage}\ of \pageref{LastPage}}\null\vfill}
+}
+
+\newcommand{\blankpage}{
+	\clearpage
+	\thispagestyle{blankpage}
+	\null\vfill
+	\begin{center}
+		\color{important!50}\textit{This page is left intentionally blank}
+	\end{center}
+	\vfill\null
+	
+	\AddToShipoutPictureBG*{%
+		\AtPageLowerLeft{%
+			\includegraphics[width=\paperwidth,height=\paperheight]{./BG/Front-Page-BG.pdf}%
+		}%
+	}
+	
+	\clearpage
+}
+
+% TODO: Right aligned language
+% TODO: Box for small text and a mode that shifts all to right.
+
+% Better ToC
+
 \makeatother
