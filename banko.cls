@@ -359,7 +359,7 @@ BoldFeatures    = {FontIndex=30} % also 20
 }
 
 
-\def\version{1.5.7-1}
+\def\version{1.5.7-2}
 \def\rulerthinkness{0.4pt}
 \setmainfont{Times New Roman}%[Scale= 1.1] % Times New Roman, Scale = 1
 
@@ -693,7 +693,7 @@ footskip=0.6in
 	defblock/.style={
 		colback=important!80,
 		colframe=important!10,
-		coltext=white!90,
+		coltext=ivory!90,
 		boxrule=0.2pt,
 		arc=2pt,
 		boxsep=5pt,
@@ -726,8 +726,47 @@ footskip=0.6in
 	\end{tcolorbox}
 }	
 
+\tcbset{
+	proofblock/.style={
+		colback=darkblue!80,
+		colframe=darkblue!10,
+		coltext=ivory!90,
+		boxrule=0.2pt,
+		arc=2pt,
+		boxsep=5pt,
+		left=5pt, right=5pt,
+		top=5pt,
+		bottom=5pt,
+		enhanced,
+		breakable,
+		before skip=10pt,
+		after skip=10pt,
+		valign=center,
+		overlay={
+			\vspace*{-5pt} % Inhalt 5pt nach oben ziehen
+		},
+	}
+}
+
+\newcounter{proof}
+\newcounter{secproof}
+\stepcounter{secproof}
+
+\newcommand{\usecproof}{\stepcounter{secproof}}
+
+\newcommand{\proofblock}[2]{
+	\begin{tcolorbox}[proofblock]%
+		\stepcounter{proof}%
+		Proof \MakeUppercase{\alphalph{\thesecproof}}.\theproof~#2
+
+		#1
+	\end{tcolorbox}
+}	
+
 % Colors
 \definecolor{important}{HTML}{AB2341} % Default headline color (blood red)
+\definecolor{darkblue}{HTML}{0D5A6B}      % Blue - Phthalo Turquoise
+\definecolor{ivory}{HTML}{FFFFF0}          % Ivory - Dark Gray
 		
 % Better \clearpage and \newpage
 \fancypagestyle{blankpage}{
