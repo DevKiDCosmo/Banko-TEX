@@ -359,7 +359,7 @@ BoldFeatures    = {FontIndex=30} % also 20
 }
 
 
-\def\version{1.5.7}
+\def\version{1.5.7-1}
 \def\rulerthinkness{0.4pt}
 \setmainfont{Times New Roman}%[Scale= 1.1] % Times New Roman, Scale = 1
 
@@ -632,7 +632,7 @@ footskip=0.6in
 	mathblock/.style={
 		colback=gray!5,
 		colframe=gray!10,
-		coltext=black!80,
+		coltext=black!90,
 		boxrule=0.2pt,
 		arc=2pt,
 		boxsep=5pt,
@@ -689,6 +689,43 @@ footskip=0.6in
 \renewcommand{\[}{\begin{mathboxenv}\oldDisplayMath}
 	\renewcommand{\]}{\oldEndDisplayMath\end{mathboxenv}}
 
+\tcbset{
+	defblock/.style={
+		colback=important!80,
+		colframe=important!10,
+		coltext=white!90,
+		boxrule=0.2pt,
+		arc=2pt,
+		boxsep=5pt,
+		left=5pt, right=5pt,
+		top=5pt,
+		bottom=5pt,
+		enhanced,
+		breakable,
+		before skip=10pt,
+		after skip=10pt,
+		valign=center,
+		overlay={
+			\vspace*{-5pt} % Inhalt 5pt nach oben ziehen
+		},
+	}
+}
+
+\newcounter{definition}
+\newcounter{secdef}
+\stepcounter{secdef}
+
+\newcommand{\usecdef}{\stepcounter{secdef}}
+
+\newcommand{\definition}[2]{
+	\begin{tcolorbox}[defblock]%
+		\stepcounter{definition}%
+		Definition \MakeUppercase{\alphalph{\thesecdef}}.\thedefinition~#2
+		
+		#1
+	\end{tcolorbox}
+}	
+
 % Colors
 \definecolor{important}{HTML}{AB2341} % Default headline color (blood red)
 		
@@ -720,6 +757,18 @@ footskip=0.6in
 	}
 	
 	\clearpage
+}
+
+\newtcolorbox{greybox}[1]{%
+	colback=gray!15,     % Hintergrundfarbe (hellgrau)
+	colframe=gray!50,    % Rahmenfarbe (dunkelgrau)
+	coltitle=black,      % Titel-Farbe
+	fonttitle=\bfseries, % Titel fett
+	title=#1,            % Titel aus Argument
+	boxrule=0.0pt,       % Rahmenstärke
+	arc=0mm,             % abgerundete Ecken
+	left=4pt,right=4pt,  % Innenabstände
+	top=6pt,bottom=6pt
 }
 
 % TODO: Right aligned language
